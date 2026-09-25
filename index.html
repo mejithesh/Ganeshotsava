@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ಉಡುಪಿಯ ವಿವಿದೆಡೆ ನಡೆದ ಸಾರ್ವಜನಿಕ ಗಣೇಶೋತ್ಸವ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tiro+Kannada&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #0a0a0a;
+      --card-bg: #141414;
+      --card-hover: #1f1f1f;
+      --accent-color: #ff5722;
+      --text-main: #f0f0f0;
+      --text-sub: #a0a0a0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Poppins', 'Tiro Kannada', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+      background: radial-gradient(circle at top, #20120b 0%, #0a0a0a 70%);
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      color: var(--text-sub);
+      font-size: 1rem;
+    }
+
+    /* Container & Grid */
+    main {
+      flex: 1;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      width: 100%;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.75rem;
+    }
+
+    /* Card Item */
+    .video-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #1f1f1f;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .video-card:hover {
+      transform: translateY(-6px);
+      background-color: var(--card-hover);
+      border-color: #333333;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+    }
+
+    .thumb-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: #000;
+      overflow: hidden;
+    }
+
+    .thumb-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .video-card:hover .thumb-wrapper img {
+      transform: scale(1.05);
+    }
+
+    /* Play Icon Overlay */
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px;
+      height: 52px;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.25s ease, transform 0.25s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .play-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: #ffffff;
+      margin-left: 3px;
+    }
+
+    .video-card:hover .play-btn {
+      background: var(--accent-color);
+      transform: translate(-50%, -50%) scale(1.12);
+    }
+
+    /* Card Body */
+    .card-info {
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #eaeaea;
+    }
+
+    /* Modal Popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 9999;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.9);
+      border: 1px solid #292929;
+    }
+
+    .modal-video-box {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 ratio */
+    }
+
+    .modal-video-box iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: -46px;
+      right: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .close-btn:hover {
+      color: var(--accent-color);
+    }
+
+    /* Footer / Subscribe */
+    footer {
+      background-color: #0c0c0c;
+      border-top: 1px solid #1a1a1a;
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .subscribe-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #cc0000;
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1.6rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      transition: background-color 0.25s, transform 0.2s;
+    }
+
+    .subscribe-btn:hover {
+      background-color: #ff0000;
+      transform: scale(1.04);
+    }
+
+    .channel-link {
+      display: block;
+      color: var(--text-sub);
+      text-decoration: none;
+      font-size: 0.88rem;
+    }
+
+    .channel-link:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>ಉಡುಪಿಯ ವಿವಿದೆಡೆ ನಡೆದ ಸಾರ್ವಜನಿಕ ಗಣೇಶೋತ್ಸವ</h1>
+    <p>ಕ್ಲಿಕ್ ಮಾಡಿ ವಿಡಿಯೋಗಳನ್ನು ವೀಕ್ಷಿಸಿ</p>
+  </header>
+
+  <!-- Main Grid -->
+  <main>
+    <div class="video-grid" id="videoGrid"></div>
+  </main>
+
+  <!-- Video Popup Modal -->
+  <div class="modal-overlay" id="videoModal">
+    <div class="modal-content">
+      <button class="close-btn" id="closeModal">&times;</button>
+      <div class="modal-video-box">
+        <iframe id="popupIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <a href="https://youtube.com/JitheshKumar" target="_blank" class="subscribe-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      Subscribe Now
+    </a>
+    <a href="https://youtube.com/JitheshKumar" target="_blank" class="channel-link">youtube.com/JitheshKumar</a>
+  </footer>
+
+  <script>
+    const videos = [
+      { id: "RrjClwVDjdQ", title: "ಮಟ್ಟು ಕಟಪಾಡಿ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "BEzaSBiDDIM", title: "ಕೊಡವೂರು ಗಣೇಶ ವಿಸರ್ಜನಾ ಮೆರವಣಿಗೆ 2026" },
+      { id: "llP8CZ-zfvg", title: "ಉಡುಪಿ ಮಾರುತಿ ವೀಥಿಕಾ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "nnhNj0hTazE", title: "ಉಡುಪಿ ಬೋರ್ಡ್ ಹೈಸ್ಕೂಲ್ ಗಣೇಶ ವಿಸರ್ಜನಾ ಮೆರವಣಿಗೆ 2026" },
+      { id: "ZApypsmQ8Vc", title: "ಮಣಿಪುರ ವೆಸ್ಟ್ ಗಣೇಶನಿಗೆ ಭಕ್ತಿ ಪೂರ್ವಕ ವಿದಾಯ 2026" },
+      { id: "kxEivladuJ4", title: "Udupi Gold Silver association Ganesha Procession 2026" },
+      { id: "aLeUJqaFuQs", title: "ಸುಭಾಷ್ ನಗರ ಗಣಪತಿ ವಿಸರ್ಜನಾ ಮೆರವಣಿಗೆ 2026" },
+      { id: "oHmimnAq3IM", title: "ಕಟಪಾಡಿ ತ್ರಿಶಾ ಕಾಲೇಜಿನ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "a8MaNAlKslA", title: "ಕಟಪಾಡಿ ಗಣೇಶೋತ್ಸವ ವಿಸರ್ಜನಾ ಮೆರವಣಿಗೆ 2026" },
+      { id: "wzVyePTIZok", title: "ಶಂಕರಪುರ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "68yVFRNb6vU", title: "ಕುರ್ಕಾಲು ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "8I1Mu6Xk_lk", title: "ಶಿರ್ವ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "2u8cTBRyIYo", title: "ಪಾಂಗಾಳ ತ್ರಿಂಶತಿ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "EIHRBdeSzHY", title: "ಉದ್ಯಾವರ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "mfLQb7ITVto", title: "ಮೂಡಬೆಟ್ಟು ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "NpQc50c2YSM", title: "ಪಂದುಬೆಟ್ಟು ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "0ZxQc4c20pk", title: "ಮಣಿಪಾಲ ಗೀತಾ ಮಂದಿರ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "ELh9mEnqIsw", title: "ಕಾಪು ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "t0Nie-JKDRI", title: "ಅಂಬಲಪಾಡಿ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "EkczNFhW0M4", title: "ಉಡುಪಿ ರಥಬೀದಿ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "Y16cX_FdOhI", title: "ಕಡಿಯಾಳಿ 60ನೇ ವರ್ಷದ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "WshWxvvhR-0", title: "ಅಂಬಲಪಾಡಿ ಬಾಲ ಗಣೇಶ 50ನೇ ವರ್ಷದ ವಿಸರ್ಜನಾ ಮೆರವಣಿಗೆ 2026" },
+      { id: "cnhXurayvB8", title: "ತೊಟ್ಟಂ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" },
+      { id: "L8oU1CtiNz8", title: "ಕಿನ್ನಿಮುಲ್ಕಿ ಗಣೇಶೋತ್ಸವ ವೈಭವೋಪೇತ ಮೆರವಣಿಗೆ 2026" },
+      { id: "gbQohrs32PM", title: "ಚಿಟ್ಪಾಡಿ ಗಣೇಶೋತ್ಸವ ಮೆರವಣಿಗೆ 2026" }
+    ];
+
+    const grid = document.getElementById('videoGrid');
+    const modal = document.getElementById('videoModal');
+    const iframe = document.getElementById('popupIframe');
+    const closeBtn = document.getElementById('closeModal');
+
+    // Populate Video Grid
+    videos.forEach(video => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      
+      // Fallback to hqdefault if maxresdefault is not available
+      const thumbUrl = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
+
+      card.innerHTML = `
+        <div class="thumb-wrapper">
+          <img src="${thumbUrl}" alt="${video.title}" loading="lazy">
+          <div class="play-btn">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <div class="card-info">
+          <div class="card-title">${video.title}</div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        openModal(video.id);
+      });
+
+      grid.appendChild(card);
+    });
+
+    // Open Modal
+    function openModal(videoId) {
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close Modal
+    function closeModalFunc() {
+      modal.classList.remove('active');
+      iframe.src = ''; // stop playback
+      document.body.style.overflow = 'auto';
+    }
+
+    closeBtn.addEventListener('click', closeModalFunc);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModalFunc();
+      }
+    });
+
+    // Close with Escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModalFunc();
+      }
+    });
+  </script>
+</body>
+</html>
